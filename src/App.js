@@ -1,24 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
+// import logo from './logo.svg';
+
 import './App.css';
+import Login from './components/login';
+import Landing from './components/landing';
 
 function App() {
+
+  // const handleClick = () => {
+  //   console.log('got here');
+    // const remote = require('electron').remote;
+    // const BrowserWindow = remote.BrowserWindow;
+    // const win = new BrowserWindow({
+    //   height: 600,
+    //   width: 800,
+    //   frame:false,
+    //   webPreferences: {
+    //     nodeIntegration: true,
+    // }
+    // });
+    // win.loadURL(`file://${__dirname}/app.html#/login`);
+  // };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Switch>            
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route to="/">
+            <Landing />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

@@ -12,34 +12,17 @@ import Landing from './components/landing';
 
 function App() {
 
-  // const handleClick = () => {
-  //   console.log('got here');
-    // const remote = require('electron').remote;
-    // const BrowserWindow = remote.BrowserWindow;
-    // const win = new BrowserWindow({
-    //   height: 600,
-    //   width: 800,
-    //   frame:false,
-    //   webPreferences: {
-    //     nodeIntegration: true,
-    // }
-    // });
-    // win.loadURL(`file://${__dirname}/app.html#/login`);
-  // };
-
   return (
-    <div className="App">
-      <Router>
-        <Switch>            
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route to="/">
-            <Landing />
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+    <Router>
+      <Switch>  
+        <Route exact path="/">
+          <Landing />
+        </Route>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

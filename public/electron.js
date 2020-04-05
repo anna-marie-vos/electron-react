@@ -1,24 +1,37 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
+let mainWindow;
+let loginWindow;
+
 function createWindow () {
   // Create the browser window.
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({
+    width: 900,
+    height: 680,
     webPreferences: {
       nodeIntegration: true
     }
   });
+  loginWindow = new BrowserWindow({
+    width: 600,
+    height: 400,
+    parent: mainWindow,
+    show: true
+  });
 
   // and load the index.html of the app.
-  win.loadURL(
+  mainWindow.loadURL(
     isDev ? 'http://localhost:3000': `file://${path.join(__dirname, '../build/index.html')}`
   );
-
+  loginWindow.loadURL(
+    isDev ? 'http://localhost:3000/login': `file://${path.join(__dirname, '../build/index.html')}`
+  );
+  
+  mainWindow.on('closed', () => mainWindow = null);
   // Open the DevTools.
-  win.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -43,6 +56,10 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+ipcMain.on('/login', (event, arg) => {
+  event.returnValue = 'pong';
 });
 
 // In this file you can include the rest of your app's specific main process

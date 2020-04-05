@@ -18,7 +18,10 @@ function createWindow () {
     width: 600,
     height: 400,
     parent: mainWindow,
-    show: true
+    show: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   // and load the index.html of the app.
@@ -30,6 +33,10 @@ function createWindow () {
   );
   
   mainWindow.on('closed', () => mainWindow = null);
+  loginWindow.on('close', (event) => {
+    event.preventDefault();
+    loginWindow.hide();
+  });
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 }
@@ -59,7 +66,7 @@ app.on('activate', () => {
 });
 
 ipcMain.on('/login', (event, arg) => {
-  event.returnValue = 'pong';
+  loginWindow.show();
 });
 
 // In this file you can include the rest of your app's specific main process

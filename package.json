@@ -2,7 +2,7 @@
   "name": "electron-react",
   "version": "0.1.0",
   "private": true,
-  "main":"public/electron.js",
+  "main": "public/electron.js",
   "description": "tutorial about electron and react",
   "author": "amv",
   "build": {
@@ -10,13 +10,16 @@
   },
   "homepage": "./",
   "dependencies": {
+    "@material-ui/core": "^4.9.10",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "cross-env": "^7.0.2",
     "electron-is-dev": "^1.1.0",
+    "fs": "0.0.1-security",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0"
   },
   "scripts": {

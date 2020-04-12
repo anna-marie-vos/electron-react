@@ -1,20 +1,21 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const fs = require('fs');
 
 let mainWindow;
-let loginWindow;
+let imageWindow;
 
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 900,
-    height: 680,
+    height: 400,
     webPreferences: {
       nodeIntegration: true
     }
   });
-  loginWindow = new BrowserWindow({
+  imageWindow = new BrowserWindow({
     width: 600,
     height: 400,
     parent: mainWindow,
@@ -28,14 +29,14 @@ function createWindow () {
   mainWindow.loadURL(
     isDev ? 'http://localhost:3000': `file://${path.join(__dirname, '../build/index.html')}`
   );
-  loginWindow.loadURL(
-    isDev ? 'http://localhost:3000/login': `file://${path.join(__dirname, '../build/index.html')}`
+  imageWindow.loadURL(
+    isDev ? 'http://localhost:3000/image': `file://${path.join(__dirname, '../build/index.html')}`
   );
   
   mainWindow.on('closed', () => mainWindow = null);
-  loginWindow.on('close', (event) => {
+  imageWindow.on('close', (event) => {
     event.preventDefault();
-    loginWindow.hide();
+    imageWindow.hide();
   });
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -65,8 +66,24 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('/login', (event, arg) => {
-  loginWindow.show();
+ipcMain.on('/image', (event, arg) => {
+  dialog.showOpenDialog({ 
+    properties: ['openFile', 'multiSelections'], 
+    filters: [
+      { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+    ] 
+  }).then(result => {
+    if(result.canceled) {
+      return;
+    }
+    //read image (note: use async in production)
+    var img = fs.readFileSync(result.filePaths[0]).toString('base64');
+    imageWindow.show();
+    imageWindow.webContents.send('image', img );
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
 });
 
 // In this file you can include the rest of your app's specific main process

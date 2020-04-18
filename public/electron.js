@@ -16,8 +16,8 @@ function createWindow () {
     }
   });
   imageWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+    width: 900,
+    height: 600,
     parent: mainWindow,
     show: false,
     webPreferences: {
@@ -39,7 +39,7 @@ function createWindow () {
     imageWindow.hide();
   });
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  imageWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -66,7 +66,7 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('/image', (event, arg) => {
+ipcMain.on('getImages', (event, arg) => {
   dialog.showOpenDialog({ 
     properties: ['openFile', 'multiSelections'], 
     filters: [
@@ -76,15 +76,26 @@ ipcMain.on('/image', (event, arg) => {
     if(result.canceled) {
       return;
     }
-    //read image (note: use async in production)
-    var img = fs.readFileSync(result.filePaths[0]).toString('base64');
-    imageWindow.show();
-    imageWindow.webContents.send('image', img );
+
+    var images = result.filePaths.map(file => {
+      // read image (note: use async in production)
+      return fs.readFileSync(file).toString('base64');
+    });
+
+    mainWindow.webContents.send('loadImages', images );
     return;
   }).catch(err => {
     console.log(err);
   });
 });
 
+ipcMain.on('showImages', (event, args) => {
+  imageWindow.show();
+  imageWindow.webContents.send('showImages', args);
+});
+
+ipcMain.on('pausePlay', (event, args) => {
+  imageWindow.webContents.send('pausePlay', args);
+});
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

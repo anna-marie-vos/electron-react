@@ -25,9 +25,26 @@ const useStyles = makeStyles((theme) => ({
 function Landing () {
   const classes = useStyles();
   const [timer, setTimer] = useState(30);
+  const [images, setImages] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isRandom, setIsRandom] = useState(false);
+  const [isWindowOpen, setIsWindowOpen] = useState(false);
 
   const handleClick = () => {
-    ipcRenderer.send('/image');
+    ipcRenderer.send('getImages');
+  };
+
+  ipcRenderer.on('loadImages', (event, arg) => {
+    setImages(arg);
+  });
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    if(!isWindowOpen) {
+      ipcRenderer.send('showImages', {images, timer, isPlaying, isRandom});
+      setIsWindowOpen(true);
+    }
+    ipcRenderer.send('pausePlay', { isPlaying });
   };
 
   return (
@@ -49,18 +66,10 @@ function Landing () {
           Select a timer for the next image to appear
         </Typography>
         <div className={classes.center}>
-          <Button variant="contained" 
-            onClick={() => {
-              setTimer(30);
-            }}
-          >
+          <Button variant="contained" onClick={() => setTimer(30) } >
             30 seconds
           </Button>
-          <Button variant="contained"
-            onClick={() => {
-              setTimer(60);
-            }}
-          >
+          <Button variant="contained" onClick={() => setTimer(60) } >
             60 seconds
           </Button>
           <TextField
@@ -70,15 +79,16 @@ function Landing () {
             InputLabelProps={{
               shrink: true,
             }}
+            value={timer}
             onChange={(e) => {
-              const value = parseInt(e.target.value);
+              const value = Math.abs(parseInt(e.target.value));
               setTimer(value);
             }}
           />
-          <Button variant="contained">
-            Pause / Play
+          <Button variant="contained" onClick={handlePlayPause}>
+            {isPlaying ? 'Pause' : 'play' }
           </Button>
-          <Button variant="contained">
+          <Button variant="contained" onClick={ () => setIsRandom(!isRandom) }>
             Shuffle
           </Button>
         </div>

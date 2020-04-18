@@ -7,7 +7,7 @@ import {
 // import logo from './logo.svg';
 
 import './App.css';
-import Login from './components/login';
+import Image from './components/image';
 import Landing from './components/landing';
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
         <Route exact path="/">
           <Landing />
         </Route>
-        <Route exact path="/login">
-          <Login />
+        <Route exact path="/image">
+          <Image />
         </Route>
       </Switch>
     </Router>

@@ -1,22 +1,23 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const fs = require('fs');
 
 let mainWindow;
-let loginWindow;
+let imageWindow;
 
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 900,
-    height: 680,
+    height: 400,
     webPreferences: {
       nodeIntegration: true
     }
   });
-  loginWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+  imageWindow = new BrowserWindow({
+    width: 900,
+    height: 600,
     parent: mainWindow,
     show: false,
     webPreferences: {
@@ -28,17 +29,17 @@ function createWindow () {
   mainWindow.loadURL(
     isDev ? 'http://localhost:3000': `file://${path.join(__dirname, '../build/index.html')}`
   );
-  loginWindow.loadURL(
-    isDev ? 'http://localhost:3000/login': `file://${path.join(__dirname, '../build/index.html')}`
+  imageWindow.loadURL(
+    isDev ? 'http://localhost:3000/image': `file://${path.join(__dirname, '../build/index.html')}`
   );
   
   mainWindow.on('closed', () => mainWindow = null);
-  loginWindow.on('close', (event) => {
+  imageWindow.on('close', (event) => {
     event.preventDefault();
-    loginWindow.hide();
+    imageWindow.hide();
   });
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  imageWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -65,9 +66,36 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('/login', (event, arg) => {
-  loginWindow.show();
+ipcMain.on('getImages', (event, arg) => {
+  dialog.showOpenDialog({ 
+    properties: ['openFile', 'multiSelections'], 
+    filters: [
+      { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+    ] 
+  }).then(result => {
+    if(result.canceled) {
+      return;
+    }
+
+    var images = result.filePaths.map(file => {
+      // read image (note: use async in production)
+      return fs.readFileSync(file).toString('base64');
+    });
+
+    mainWindow.webContents.send('loadImages', images );
+    return;
+  }).catch(err => {
+    console.log(err);
+  });
 });
 
+ipcMain.on('showImages', (event, args) => {
+  imageWindow.show();
+  imageWindow.webContents.send('showImages', args);
+});
+
+ipcMain.on('pausePlay', (event, args) => {
+  imageWindow.webContents.send('pausePlay', args);
+});
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

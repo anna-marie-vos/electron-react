@@ -36,7 +36,7 @@ function Landing () {
 
   ipcRenderer.on('loadImages', (event, arg) => {
     setImages(arg);
-  });
+  }).setMaxListeners(0);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -81,8 +81,12 @@ function Landing () {
             }}
             value={timer}
             onChange={(e) => {
-              const value = Math.abs(parseInt(e.target.value));
-              setTimer(value);
+              if(e.target.value === ''){
+                setTimer(0);
+              } else {
+                const value = Math.abs(parseInt(e.target.value));
+                setTimer(value);
+              }
             }}
           />
           <Button variant="contained" onClick={handlePlayPause}>

@@ -18,7 +18,6 @@ function createWindow () {
   imageWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    parent: mainWindow,
     show: false,
     webPreferences: {
       nodeIntegration: true
@@ -39,6 +38,7 @@ function createWindow () {
     imageWindow.hide();
   });
   // Open the DevTools.
+  mainWindow.webContents.openDevTools();
   imageWindow.webContents.openDevTools();
 }
 
@@ -95,6 +95,7 @@ ipcMain.on('showImages', (event, args) => {
 });
 
 ipcMain.on('pausePlay', (event, args) => {
+  imageWindow.show();
   imageWindow.webContents.send('pausePlay', args);
 });
 // In this file you can include the rest of your app's specific main process

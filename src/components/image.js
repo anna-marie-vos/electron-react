@@ -60,12 +60,12 @@ function Image () {
       const i = Math.floor(Math.random() * Math.floor(max));
       setIndex( i );
     }
-  });
+  }).setMaxListeners(0);
 
   ipcRenderer.on('pausePlay', (event, args) => {
     const { isPlaying } = args;
     setPause(isPlaying);
-  });
+  }).setMaxListeners(0);
 
   return (
     <div className={classes.root}>

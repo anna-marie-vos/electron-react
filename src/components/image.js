@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { Avatar } from '@material-ui/core';
+import { indigo } from '@material-ui/core/colors';
+
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -10,10 +13,10 @@ const useStyles = makeStyles((theme) => ({
   timer: {
     position: 'absolute',
     left: 0,
-    backgroundColor: 'black',
+  },
+  blue: {
     color: 'white',
-    fontWeight: 'bold',
-    width: 50
+    backgroundColor: indigo[900],
   }
 }));
 
@@ -70,9 +73,9 @@ function Image () {
   return (
     <div className={classes.root}>
       <div className={classes.timer}>
-        <p>{timeRemaining + ' s'}</p>
+        <Avatar className={classes.blue}>{timeRemaining}</Avatar>
       </div>
-      <img src={'data:image/png;base64,' + images[index]} alt="img" style={{ maxWidth:'100%' }}/>
+      { images[index] && <img src={'data:image/png;base64,' + images[index]} alt="img" style={{ maxWidth:'100%' }}/> }
     </div>
   );
 

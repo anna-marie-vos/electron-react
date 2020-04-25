@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Paper, Typography, Card ,TextField } from '@material-ui/core';
+import { Button, Paper, Typography, Card ,TextField, IconButton, Avatar } from '@material-ui/core';
+import { PlayCircleOutline, PauseCircleOutline, ShuffleOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 
 const electron = window.require('electron');
@@ -66,12 +67,12 @@ function Landing () {
           Select a timer for the next image to appear
         </Typography>
         <div className={classes.center}>
-          <Button variant="contained" onClick={() => setTimer(30) } >
-            30 seconds
-          </Button>
-          <Button variant="contained" onClick={() => setTimer(60) } >
-            60 seconds
-          </Button>
+          <IconButton variant="contained" onClick={() => setTimer(30) } >
+            <Avatar> 30 s </Avatar>
+          </IconButton>
+          <IconButton variant="contained" onClick={() => setTimer(60) } >
+            <Avatar> 60 s </Avatar>
+          </IconButton>
           <TextField
             id="standard-number"
             label="Custom timer (in seconds)"
@@ -89,12 +90,18 @@ function Landing () {
               }
             }}
           />
-          <Button variant="contained" onClick={handlePlayPause}>
-            {isPlaying ? 'Pause' : 'play' }
-          </Button>
-          <Button variant="contained" onClick={ () => setIsRandom(!isRandom) }>
-            Shuffle
-          </Button>
+          <IconButton 
+            variant="contained" 
+            onClick={handlePlayPause} 
+            aria-label={isPlaying ? 'Pause' : 'play' }
+            disabled={images.length === 0}
+            color="primary"
+          >
+            { isPlaying ? <PauseCircleOutline /> : <PlayCircleOutline /> }
+          </IconButton>
+          <IconButton variant="contained" onClick={ () => setIsRandom(!isRandom) }>
+            <ShuffleOutlined />
+          </IconButton>
         </div>
       </Card>
     </Paper>

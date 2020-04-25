@@ -70,7 +70,7 @@ ipcMain.on('getImages', (event, arg) => {
   dialog.showOpenDialog({ 
     properties: ['openFile', 'multiSelections'], 
     filters: [
-      { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+      { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif'] }
     ] 
   }).then(result => {
     if(result.canceled) {

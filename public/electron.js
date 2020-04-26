@@ -29,7 +29,7 @@ function createWindow () {
     isDev ? 'http://localhost:3000': `file://${path.join(__dirname, '../build/index.html')}`
   );
   imageWindow.loadURL(
-    isDev ? 'http://localhost:3000/image': `file://${path.join(__dirname, '../build/index.html')}`
+    isDev ? 'http://localhost:3000/image': `file://${path.join(__dirname, '../build/index.html#/image')}`
   );
   
   mainWindow.on('closed', () => mainWindow = null);
